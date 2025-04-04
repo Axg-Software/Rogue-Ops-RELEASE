@@ -1,5 +1,5 @@
 # How to compile!
-This is a guide to fully compile Project: FTS!
+This is a guide to fully compile Rouge Ops!
 
 ## Libs required:
 The libs you need to compile the game fully are: `Discord RPC` along with flixel and lime etc.
