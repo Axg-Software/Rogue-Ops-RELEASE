@@ -1,0 +1,4 @@
+For level 4 you have to kill the 2 soliders in front to get the key to the back of the building so you can shut off the power and the doors open so you can go inside and see 
+what happened to your squad
+and while your there you hear your squad is going to be going back to the forest the game started at
+and theres a collision in the building and it sets a var to true to show ur in the building
