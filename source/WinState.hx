@@ -44,7 +44,7 @@ class WinState extends FlxState // TODO: make it fade into and out of the state
 		super.update(elapsed);
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			FlxG.switchState(new PlayState(2, 0));
+			FlxG.switchState(new PlayState(2, FlxG.save.data.level));
 		}
 		else if (FlxG.keys.justPressed.ESCAPE)
 		{

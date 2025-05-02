@@ -1,6 +1,5 @@
 THIS LIST IS FOR NOT VERY IMPORTANT STUFF BUT I DO NEED TO DO EVENTUALLY
 
-name - TODO1: Fix x pos for the up and down position -----DONE-----
 name - TODO2: make dundun sound shorter 
-name - TODO3: change co-op level 1 collisions to be less narrow
 name - TODO4: make shoot sounds shorter
+name - TODO5: fix the bug where one of the players can die where the bullet last was

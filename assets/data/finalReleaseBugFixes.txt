@@ -1,6 +1,0 @@
-things I need to try and fix before release:
-
-1. Long loading times after coming out of CampaignTransitionState
-2. npc not showing unless u press G in level 3 & 4 (NEED TO BE FIXED) (DONE)
-3. Save not working after Level 1 (NEED TO BE FIXED) not like anyone is gonna play the campaign so its fine
-4. plr being above the guns in level 4?

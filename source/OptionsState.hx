@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.sound.FlxSound;
 import flixel.util.FlxColor;
 
 class OptionsState extends FlxState
@@ -15,26 +16,90 @@ class OptionsState extends FlxState
 
 	var shotgunSelect:FlxSprite = new FlxSprite(1009, 647, AssetPaths.shotGun_Pump__png);
 
+	// skip intro vars
+	var skipIntroHEADER:FlxSprite = new FlxSprite(53, 176, AssetPaths.skipIntro__png);
+	var skipIntroYes:FlxSprite = new FlxSprite(502, 176, AssetPaths.yesOption__png);
+	var skipIntroNo:FlxSprite = new FlxSprite(502, 176, AssetPaths.noOption__png);
+	var skipIntroSelected:Bool;
+
+	var clickSound:FlxSound;
+
 	override function create()
 	{
 		super.create();
 		FlxG.camera.fade(FlxColor.BLACK, 0.5, true, null, false);
+		clickSound = FlxG.sound.load(AssetPaths.mouse_Click__ogg);
 
 		add(bg);
 		add(fade);
 		add(quitbutton);
 		add(optionsHeader);
-		add(noOptionsYet);
+		add(skipIntroHEADER);
+		if (FlxG.save.data.name != null || FlxG.save.data.skipIntro == "yes")
+		{
+			add(skipIntroYes);
+			skipIntroSelected = true;
+		}
+		else if (FlxG.save.data.skipIntro == null || FlxG.save.data.skipIntro == "no")
+		{
+			add(skipIntroNo);
+			skipIntroSelected = false;
+		}
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		// TODO: when u hover over a button it changes the color (FOR ALL BUTTONS)
+		if (FlxG.mouse.overlaps(skipIntroYes) && skipIntroSelected == true)
+		{
+			if (FlxG.mouse.justPressed)
+			{
+				clickSound.play();
+				skipIntroSelected = false;
+			}
+		}
+
+		if (FlxG.mouse.overlaps(skipIntroNo) && skipIntroSelected == false)
+		{
+			if (FlxG.mouse.justPressed)
+			{
+				clickSound.play();
+				skipIntroSelected = true;
+			}
+		}
+
+		if (skipIntroSelected == true)
+		{
+			remove(skipIntroNo);
+			add(skipIntroYes);
+		}
+
+		if (skipIntroSelected == false)
+		{
+			remove(skipIntroYes);
+			add(skipIntroNo);
+		}
+
 		if (FlxG.mouse.overlaps(quitbutton))
 		{
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
+				clickSound.play();
+				if (skipIntroSelected == true)
+				{
+					add(skipIntroYes);
+					FlxG.save.data.skipIntro = "yes";
+					FlxG.save.flush();
+				}
+				else if (skipIntroSelected == false)
+				{
+					add(skipIntroNo);
+					FlxG.save.data.skipIntro = "no";
+					FlxG.save.flush();
+				}
 				FlxG.switchState(new MenuState());
 			}
 		}

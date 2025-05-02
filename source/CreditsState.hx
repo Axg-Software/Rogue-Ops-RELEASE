@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.sound.FlxSound;
 import flixel.util.FlxColor;
 
 class CreditsState extends FlxState
@@ -15,10 +16,13 @@ class CreditsState extends FlxState
 	var shotgunSelect:FlxSprite = new FlxSprite(1009, 647, AssetPaths.shotGun_Pump__png);
 	var fade:FlxSprite = new FlxSprite(0, 0, AssetPaths.fade2__png);
 
+	var clickSound:FlxSound;
+
 	override public function create()
 	{
 		super.create();
 		FlxG.camera.fade(FlxColor.BLACK, 0.5, true, null, false);
+		clickSound = FlxG.sound.load(AssetPaths.mouse_Click__ogg);
 
 		add(creditsBG);
 		add(fade);
@@ -35,6 +39,7 @@ class CreditsState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
+				clickSound.play();
 				FlxG.switchState(new MenuState());
 			}
 		}

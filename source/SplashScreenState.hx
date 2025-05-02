@@ -1,4 +1,4 @@
-~package;
+package;
 
 import flixel.FlxG;
 import flixel.FlxState;
@@ -32,7 +32,6 @@ class SplashScreenState extends FlxState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
-		FlxG.sound.playMusic(AssetPaths.mainMenuMusicEffect__ogg, 1, true);
 		FlxG.camera.fade(FlxColor.BLACK, 3, false, onComplete, false);
 
 		if (FlxG.keys.justPressed.S)

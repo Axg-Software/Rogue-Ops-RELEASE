@@ -6,10 +6,6 @@ import flixel.FlxState;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-#if cpp
-import sys.FileSystem;
-import sys.io.File;
-#end
 
 class MenuState extends FlxState
 {
@@ -20,31 +16,25 @@ class MenuState extends FlxState
 	var optionsButton:FlxSprite = new FlxSprite(22, 352, AssetPaths.options__png);
 	var creditsButton:FlxSprite = new FlxSprite(22, 418, AssetPaths.credits__png);
 
-	var level:FlxSprite = new FlxSprite(22, 663, AssetPaths.level__png);
-	var rank:FlxSprite = new FlxSprite(1080, 663, AssetPaths.rank__png);
-
 	var shotgunSelect:FlxSprite = new FlxSprite(22, 0, AssetPaths.shotGun_Pump__png);
 
-	// levels
-	var p1L1:FlxSprite = new FlxSprite(0, 0, AssetPaths.p1L1__png);
-	var p1L2:FlxSprite = new FlxSprite(0, 0, AssetPaths.p1L2__png);
-	var p1L3:FlxSprite = new FlxSprite(0, 0, AssetPaths.p1L3__png);
-	var p1L4:FlxSprite = new FlxSprite(0, 0, AssetPaths.p1L4__png);
-
 	var music:FlxSound;
+	var clickSound:FlxSound;
 	var cmmpgnORcoop:Int;
 
 	var fade:FlxSprite = new FlxSprite(0, 0, AssetPaths.fade2__png);
 
 	// version shit
-	var gameV:FlxText = new FlxText(546, 531, FlxG.width, "Rouge Ops version: 1.0.0", 46);
-	var engineV:FlxText = new FlxText(591, 606, FlxG.width, "RE Version: 1.0", 46);
+	var gameV:FlxText = new FlxText(546, 531, FlxG.width, "Rouge Ops version: 1.1.0", 46);
+	var engineV:FlxText = new FlxText(591, 606, FlxG.width, "RE 1.0", 46);
 
 	override function create()
 	{
 		super.create();
 
 		FlxG.camera.fade(FlxColor.BLACK, 1, true, null, false);
+		music = FlxG.sound.load(AssetPaths.mainMenuMusicEffect__ogg);
+		clickSound = FlxG.sound.load(AssetPaths.mouse_Click__ogg);
 
 		add(menuBG);
 		add(fade);
@@ -53,13 +43,19 @@ class MenuState extends FlxState
 		add(coOpButton);
 		add(optionsButton);
 		add(creditsButton);
-		add(level);
-		// add(rank);
+		music.play();
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		// for debugging
+		/*if (FlxG.keys.justPressed.R)
+			{
+				FlxG.save.erase();
+				System.exit(999); // RIP
+		}*/
 
 		if (FlxG.mouse.overlaps(campaignButton))
 		{
@@ -68,8 +64,20 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
+				clickSound.play();
 				cmmpgnORcoop = 1;
-				FlxG.switchState(new PlayState(cmmpgnORcoop, 1));
+				if (FlxG.save.data.level != null)
+				{
+					music.stop();
+					FlxG.switchState(new PlayState(cmmpgnORcoop, FlxG.save.data.level));
+				}
+				else if (FlxG.save.data.level == null)
+				{
+					music.stop();
+					FlxG.save.data.level = 1;
+					FlxG.save.flush();
+					FlxG.switchState(new PlayState(cmmpgnORcoop, FlxG.save.data.level));
+				}
 			}
 		}
 		else if (!FlxG.mouse.overlaps(campaignButton))
@@ -84,8 +92,10 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
+				music.stop();
+				clickSound.play();
 				cmmpgnORcoop = 2;
-				FlxG.switchState(new PlayState(cmmpgnORcoop, 0));
+				FlxG.switchState(new LevelSelectState(cmmpgnORcoop, 0));
 			}
 		}
 		else if (!FlxG.mouse.overlaps(coOpButton))
@@ -100,6 +110,7 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
+				clickSound.play();
 				FlxG.switchState(new OptionsState());
 			}
 		}
@@ -115,6 +126,7 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
+				clickSound.play();
 				FlxG.switchState(new CreditsState());
 			}
 		}
@@ -129,31 +141,6 @@ class MenuState extends FlxState
 			remove(shotgunSelect);
 		}
 
-		#if cpp
-		var level = 'assets\\data\\rankStuff\\level.axh';
-		if (FileSystem.exists(level))
-		{
-			var fileContents = File.getContent(level);
-
-			if (fileContents.indexOf("P1L1") != -1)
-			{
-				addLevelP1L1();
-			}
-			if (fileContents.indexOf("P1L2") != -1)
-			{
-				addLevelP1L2();
-			}
-			if (fileContents.indexOf("P1L3") != -1)
-			{
-				addLevelP1L3();
-			}
-			if (fileContents.indexOf("P1L4") != -1)
-			{
-				addLevelP1L4();
-			}
-		}
-		#end
-
 		if (FlxG.keys.pressed.V) // Just adding sum random stuff till release lmao
 		{
 			add(gameV);
@@ -164,33 +151,5 @@ class MenuState extends FlxState
 			remove(gameV);
 			remove(engineV);
 		}
-	}
-
-	function addLevelP1L1()
-	{
-		p1L1.x = 145;
-		p1L1.y = 656;
-		add(p1L1);
-	}
-
-	function addLevelP1L2()
-	{
-		p1L2.x = 145;
-		p1L2.y = 656;
-		add(p1L2);
-	}
-
-	function addLevelP1L3()
-	{
-		p1L3.x = 145;
-		p1L3.y = 656;
-		add(p1L3);
-	}
-
-	function addLevelP1L4()
-	{
-		p1L4.x = 145;
-		p1L4.y = 656;
-		add(p1L4);
 	}
 }

@@ -1,4 +1,4 @@
-// INTRODUCING: RE 1.0
+// INTRODUCING: RE
 // RE is an engine similar to IW, designed exclusively for Rogue Ops games and updates.
 // It will never be released to the public like AXE Engine; instead, it will remain a proprietary engine like Source, IW, and others.
 // Im sorry for the shit u are about to see in this code
@@ -9,12 +9,8 @@ import flixel.FlxSprite;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
-#if cpp
-import sys.FileSystem;
-import sys.io.File;
-#end
 
-class PlayState extends TestLevelState
+class PlayState extends TestLevelState // yo past ethan.. why the fuck did you made it extend TestLevelState what the fuck even is that???
 {
 	var whatLevel:Int;
 	// Plr stuff
@@ -131,6 +127,7 @@ class PlayState extends TestLevelState
 	override public function create()
 	{
 		super.create();
+
 		FlxG.camera.fade(FlxColor.BLACK, 0.5, true, null, false);
 
 		arSHOOT = FlxG.sound.load(AssetPaths.assaultRifle_Shoot__ogg);
@@ -175,75 +172,30 @@ class PlayState extends TestLevelState
 
 		if (CMPGN_COOP == 1)
 		{
-			#if cpp
-			var campaignSave = 'assets\\data\\campaignSave.axh';
-			var fileContents = File.getContent(campaignSave);
-			#end
-
-			if (whatLevel == 1)
+			if (FlxG.save.data.level == 1)
 			{
-				#if cpp
-				if (FileSystem.exists(campaignSave))
-				{
-					if (fileContents.indexOf("L1") != -1)
-					{
-						addLevelL1();
-					}
-				}
-				#end
+				addLevelL1();
 			}
-			else if (whatLevel == 2)
+			else if (FlxG.save.data.level == 2)
 			{
 				add(p2Collision1);
 				add(p2Collision2);
 				add(p2Collision3);
-				#if cpp
-				if (FileSystem.exists(campaignSave))
-				{
-					if (fileContents.indexOf("L2") != -1)
-					{
-						addLevelL2();
-					}
-				}
-				#end
+				addLevelL2();
 			}
-			else if (whatLevel == 3)
+			else if (FlxG.save.data.level == 3)
 			{
-				#if cpp
-				if (FileSystem.exists(campaignSave))
-				{
-					if (fileContents.indexOf("L3") != -1)
-					{
-						addLevelL3();
-					}
-				}
-				#end
+				addLevelL3();
 				add(npc1);
 			}
-			else if (whatLevel == 4)
+			else if (FlxG.save.data.level == 4)
 			{
-				#if cpp
-				if (FileSystem.exists(campaignSave))
-				{
-					if (fileContents.indexOf("L4") != -1)
-					{
-						addLevelL4();
-					}
-				}
-				#end
+				addLevelL4();
 				add(npcLevel4);
 			}
-			else if (whatLevel == 5)
+			else if (FlxG.save.data.level == 5)
 			{
-				#if cpp
-				if (FileSystem.exists(campaignSave))
-				{
-					if (fileContents.indexOf("L5") != -1)
-					{
-						addLevelL5();
-					}
-				}
-				#end
+				addLevelL5();
 			}
 		}
 		else if (CMPGN_COOP == 2)
@@ -256,7 +208,7 @@ class PlayState extends TestLevelState
 			add(cpL1C4);
 			add(cpL1C5);
 			add(cpL1C6);
-			createCoOpL1();
+			createCoOpL1(whatLevel);
 			add(redFlag);
 			add(blueFlag);
 		}
@@ -300,7 +252,7 @@ class PlayState extends TestLevelState
 		{
 			whatThisIs.text = "Campaign";
 
-			if (whatLevel == 1)
+			if (FlxG.save.data.level == 1)
 			{
 				if (rocketTouching == false)
 				{
@@ -328,11 +280,13 @@ class PlayState extends TestLevelState
 					rocket.y = rocket.y - 20;
 					if (rocket.y <= 0)
 					{
-						FlxG.switchState(new CampaignTransitionState(1));
+						// FlxG.save.data.level = 2;
+						// FlxG.save.flush();
+						FlxG.switchState(new CampaignTransitionState());
 					}
 				}
 			}
-			else if (whatLevel == 2)
+			else if (FlxG.save.data.level == 2)
 			{
 				var collisionObjects = [p2Collision1, p2Collision2, p2Collision3];
 
@@ -348,10 +302,12 @@ class PlayState extends TestLevelState
 
 				if (FlxG.mouse.overlaps(paperNote) && FlxG.mouse.justPressed)
 				{
-					FlxG.switchState(new CampaignTransitionState(2));
+					// FlxG.save.data.level = 3;
+					// FlxG.save.flush();
+					FlxG.switchState(new CampaignTransitionState());
 				}
 			}
-			else if (whatLevel == 3)
+			else if (FlxG.save.data.level == 3)
 			{
 				var collisionObjects = [p3Collision1, p3Collision2];
 
@@ -367,7 +323,9 @@ class PlayState extends TestLevelState
 
 				if (FlxG.mouse.overlaps(npc1) && FlxG.mouse.justPressed)
 				{
-					FlxG.switchState(new CampaignTransitionState(3));
+					// FlxG.save.data.level = 4;
+					// FlxG.save.flush();
+					FlxG.switchState(new CampaignTransitionState());
 				}
 
 				if (npcAlive == true)
@@ -375,7 +333,7 @@ class PlayState extends TestLevelState
 					add(npc1);
 				}
 			}
-			else if (whatLevel == 4)
+			else if (FlxG.save.data.level == 4)
 			{
 				var collisionObjects = [
 					p4Collision1,
@@ -399,7 +357,7 @@ class PlayState extends TestLevelState
 
 				if (FlxG.mouse.overlaps(gateClickable) && FlxG.mouse.justPressed && gateopen == true)
 				{
-					FlxG.switchState(new CampaignTransitionState(4));
+					FlxG.switchState(new CampaignTransitionState());
 				}
 				if (bullet.overlaps(npcLevel4))
 				{
