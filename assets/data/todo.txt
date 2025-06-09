@@ -3,3 +3,5 @@ THIS LIST IS FOR NOT VERY IMPORTANT STUFF BUT I DO NEED TO DO EVENTUALLY
 name - TODO2: make dundun sound shorter 
 name - TODO4: make shoot sounds shorter
 name - TODO5: fix the bug where one of the players can die where the bullet last was
+name - TODO6: remaster the campaign since it was rushed since I started it at the end of devleopment
+this would mean I would have to maybe add more levels to define the story a little, change the story a little bit to make it more clear.

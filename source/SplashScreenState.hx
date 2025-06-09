@@ -16,6 +16,9 @@ class SplashScreenState extends FlxState
 	override function create()
 	{
 		super.create();
+		FlxG.mouse.visible = false;
+
+		FlxG.mouse.load(AssetPaths.icons8_cursor_48__png);
 
 		dundun = FlxG.sound.load(AssetPaths.dundun__ogg);
 

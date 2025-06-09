@@ -3,6 +3,23 @@ This is inspired by the [FNF changelog](https://github.com/FunkinCrew/Funkin/blo
 
 Written by [Axuko](https://github.com/Ethan-makes-music?tab=repositories)
 
+## V1.2.0 - 6-9-25
+### Added
+- Offically added back player levels and they are fully working!
+- After u complete a co-op game u have a results screen and it shows how much xp you gained
+- When u hover over one of the level select buttons its grows a little
+- Whenever u click your mouse button u hear a click sound
+- A custom cursor
+- Added a quit button to the Level select state (You can still use backspace if you really want to tho)
+### Changed
+- Made it so cursor hides in game (ONLY FOR CO-OP)
+- Made it so cursor hides in the splashscreen
+### Fixed
+- Fixed the save button still apearing in the pause menu
+- Bug where if you press replay after you finish the CO-OP game you get a black bg with dev textures
+### Removed
+- Beta stuff in the files
+
 ## V1.1.0 – 5-2-25
 ### Added
 - HTML5 port

@@ -12,6 +12,7 @@ class WinState extends FlxState // TODO: make it fade into and out of the state
 	var plr2wins:FlxSprite = new FlxSprite(140, 467, AssetPaths.plr2wins__png);
 	var sda:FlxSprite = new FlxSprite(15, 680, AssetPaths.enterTOReplat__png);
 	var fade:FlxSprite = new FlxSprite(0, 0, AssetPaths.fade2__png);
+	var cmmpgnORcoop:Int;
 
 	var www:Bool;
 
@@ -44,7 +45,8 @@ class WinState extends FlxState // TODO: make it fade into and out of the state
 		super.update(elapsed);
 		if (FlxG.keys.justPressed.ENTER)
 		{
-			FlxG.switchState(new PlayState(2, FlxG.save.data.level));
+			cmmpgnORcoop = 2;
+			FlxG.switchState(new LevelSelectState(cmmpgnORcoop, 0));
 		}
 		else if (FlxG.keys.justPressed.ESCAPE)
 		{

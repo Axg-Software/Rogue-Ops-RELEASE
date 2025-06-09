@@ -34,12 +34,17 @@ class CreditsState extends FlxState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (FlxG.mouse.justPressed)
+		{
+			clickSound.play();
+		}
+
 		if (FlxG.mouse.overlaps(quitbutton))
 		{
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				FlxG.switchState(new MenuState());
 			}
 		}

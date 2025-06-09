@@ -22,6 +22,12 @@ class OptionsState extends FlxState
 	var skipIntroNo:FlxSprite = new FlxSprite(502, 176, AssetPaths.noOption__png);
 	var skipIntroSelected:Bool;
 
+	// start fullscreen vars -- UN-USED RIGHT NOW
+	var startFullscreenHEADER:FlxSprite = new FlxSprite(53, 221, AssetPaths.startFullscreen__png);
+	var startfullscreenYes:FlxSprite = new FlxSprite(662, 221, AssetPaths.yesOption__png);
+	var startfullscreenNo:FlxSprite = new FlxSprite(662, 221, AssetPaths.noOption__png);
+	var startfullscreenSelected:Bool; // this is for v1.3 tehehe
+
 	var clickSound:FlxSound;
 
 	override function create()
@@ -35,6 +41,7 @@ class OptionsState extends FlxState
 		add(quitbutton);
 		add(optionsHeader);
 		add(skipIntroHEADER);
+
 		if (FlxG.save.data.name != null || FlxG.save.data.skipIntro == "yes")
 		{
 			add(skipIntroYes);
@@ -51,12 +58,15 @@ class OptionsState extends FlxState
 	{
 		super.update(elapsed);
 
-		// TODO: when u hover over a button it changes the color (FOR ALL BUTTONS)
+		if (FlxG.mouse.justPressed)
+		{
+			clickSound.play();
+		}
+
 		if (FlxG.mouse.overlaps(skipIntroYes) && skipIntroSelected == true)
 		{
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				skipIntroSelected = false;
 			}
 		}
@@ -65,7 +75,6 @@ class OptionsState extends FlxState
 		{
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				skipIntroSelected = true;
 			}
 		}

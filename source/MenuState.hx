@@ -6,6 +6,7 @@ import flixel.FlxState;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
+import lime.system.System;
 
 class MenuState extends FlxState
 {
@@ -24,13 +25,22 @@ class MenuState extends FlxState
 
 	var fade:FlxSprite = new FlxSprite(0, 0, AssetPaths.fade2__png);
 
+	// level stuff (I wish I didnt delete the code cuz now I have to re-add it)
+	var level:FlxSprite = new FlxSprite(22, 663, AssetPaths.level__png);
+
+	var p1L1:FlxSprite = new FlxSprite(145, 656, AssetPaths.p1L1__png);
+	var p1L2:FlxSprite = new FlxSprite(145, 656, AssetPaths.p1L2__png);
+	var p1L3:FlxSprite = new FlxSprite(145, 656, AssetPaths.p1L3__png);
+	var p1L4:FlxSprite = new FlxSprite(145, 656, AssetPaths.p1L4__png);
+
 	// version shit
-	var gameV:FlxText = new FlxText(546, 531, FlxG.width, "Rouge Ops version: 1.1.0", 46);
+	var gameV:FlxText = new FlxText(546, 531, FlxG.width, "Rouge Ops version: 1.2.0", 46);
 	var engineV:FlxText = new FlxText(591, 606, FlxG.width, "RE 1.0", 46);
 
 	override function create()
 	{
 		super.create();
+		FlxG.mouse.visible = true;
 
 		FlxG.camera.fade(FlxColor.BLACK, 1, true, null, false);
 		music = FlxG.sound.load(AssetPaths.mainMenuMusicEffect__ogg);
@@ -43,6 +53,33 @@ class MenuState extends FlxState
 		add(coOpButton);
 		add(optionsButton);
 		add(creditsButton);
+		add(level);
+
+		if (FlxG.save.data.levelXP != null)
+		{
+			if (FlxG.save.data.levelXP == 1)
+			{
+				add(p1L1);
+			}
+			else if (FlxG.save.data.levelXP == 2)
+			{
+				add(p1L2);
+			}
+			else if (FlxG.save.data.levelXP == 3)
+			{
+				add(p1L3);
+			}
+			else if (FlxG.save.data.levelXP == 4)
+			{
+				add(p1L4);
+			}
+		}
+		else if (FlxG.save.data.levelXP == null)
+		{
+			FlxG.save.data.levelXP = 1;
+			FlxG.save.flush();
+		}
+
 		music.play();
 	}
 
@@ -50,12 +87,29 @@ class MenuState extends FlxState
 	{
 		super.update(elapsed);
 
-		// for debugging
-		/*if (FlxG.keys.justPressed.R)
-			{
-				FlxG.save.erase();
-				System.exit(999); // RIP
-		}*/
+		FlxG.mouse.visible = true;
+
+		if (FlxG.save.data.levelXP == 1)
+		{
+			add(p1L1);
+		}
+		else if (FlxG.save.data.levelXP == 2)
+		{
+			add(p1L2);
+		}
+		else if (FlxG.save.data.levelXP == 3)
+		{
+			add(p1L3);
+		}
+		else if (FlxG.save.data.levelXP == 4)
+		{
+			add(p1L4);
+		}
+
+		if (FlxG.mouse.justPressed)
+		{
+			clickSound.play();
+		}
 
 		if (FlxG.mouse.overlaps(campaignButton))
 		{
@@ -64,7 +118,6 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				cmmpgnORcoop = 1;
 				if (FlxG.save.data.level != null)
 				{
@@ -93,7 +146,6 @@ class MenuState extends FlxState
 			if (FlxG.mouse.justPressed)
 			{
 				music.stop();
-				clickSound.play();
 				cmmpgnORcoop = 2;
 				FlxG.switchState(new LevelSelectState(cmmpgnORcoop, 0));
 			}
@@ -110,7 +162,6 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				FlxG.switchState(new OptionsState());
 			}
 		}
@@ -126,7 +177,6 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				FlxG.switchState(new CreditsState());
 			}
 		}

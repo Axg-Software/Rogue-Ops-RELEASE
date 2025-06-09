@@ -14,7 +14,7 @@ class PauseMenuSubstate extends FlxSubState
 	// buttons
 	var continueButton:FlxSprite = new FlxSprite(455, 214, AssetPaths.Continue__png);
 	var saveButton:FlxSprite = new FlxSprite(531, 262, AssetPaths.save__png);
-	var quitButton:FlxSprite = new FlxSprite(545, 317, AssetPaths.quit__png);
+	var quitButton:FlxSprite = new FlxSprite(545, 262, AssetPaths.quit__png);
 
 	// rank vars
 	var rank:FlxSprite = new FlxSprite(1080, 663, AssetPaths.rank__png);
@@ -37,13 +37,20 @@ class PauseMenuSubstate extends FlxSubState
 
 		add(pauseHeader);
 		add(continueButton);
-		add(saveButton);
+		// add(saveButton);
 		add(quitButton);
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		FlxG.mouse.visible = true;
+
+		if (FlxG.mouse.justPressed)
+		{
+			clickSound.play();
+		}
 
 		// if the mouse is overlapping AND selects
 		if (FlxG.keys.justPressed.ESCAPE || FlxG.mouse.overlaps(continueButton))
@@ -53,7 +60,6 @@ class PauseMenuSubstate extends FlxSubState
 			shotgunSelect.y = 230;
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				close();
 			}
 		}
@@ -64,7 +70,6 @@ class PauseMenuSubstate extends FlxSubState
 			shotgunSelect.y = 281;
 			if (FlxG.mouse.justPressed)
 			{
-				clickSound.play();
 				FlxG.switchState(new MenuState());
 			}
 		}

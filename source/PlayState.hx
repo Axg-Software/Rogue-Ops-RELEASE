@@ -117,6 +117,9 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 
 	var gateClickable:FlxSprite = new FlxSprite(538, 10);
 
+	// V1.2 vars
+	var totalKills:Int = 0;
+
 	public function new(cmppgnOcoop:Int, level:Int)
 	{
 		super();
@@ -390,6 +393,8 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 		}
 		else if (CMPGN_COOP == 2)
 		{
+			FlxG.mouse.visible = false;
+
 			whatThisIs.text = "CO-OP";
 			if (FlxG.keys.pressed.UP)
 			{
@@ -462,12 +467,12 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 			if (redFlag.overlaps(redFlagCollider))
 			{
 				whoWon = true;
-				FlxG.switchState(new WinState(whoWon));
+				FlxG.switchState(new LevelXPState(totalKills, whoWon));
 			}
 			else if (blueFlag.overlaps(blueFlagCollider))
 			{
 				whoWon = false;
-				FlxG.switchState(new WinState(whoWon));
+				FlxG.switchState(new LevelXPState(totalKills, whoWon));
 			}
 		}
 
@@ -642,6 +647,7 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 		else if (FlxG.keys.justPressed.W)
 		{
 			gunNbulletUD = 1;
+			gunNbulletDIR = false;
 			assaultRifle_ScarH.flipX = false;
 			pistol_Berretta.flipX = false;
 			shotgun_Pump.flipX = false;
@@ -650,6 +656,7 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 		else if (FlxG.keys.justPressed.S)
 		{
 			gunNbulletUD = 2;
+			gunNbulletDIR = false;
 			assaultRifle_ScarH.flipX = false;
 			pistol_Berretta.flipX = false;
 			shotgun_Pump.flipX = false;
@@ -853,6 +860,7 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 			bullet_2.x = -1000;
 			bullet_2.y = -1000;
 			remove(bullet);
+			totalKills = totalKills + 1;
 		}
 
 		if (bullet_2.overlaps(plr) && active == true)
@@ -864,12 +872,13 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 			bullet.x = -1000;
 			bullet.y = -1000;
 			remove(bullet_2);
+			totalKills = totalKills + 1;
 		}
 	}
 
 	function shootBullet(gun:Int, plrr:Int) // 1 = plr 1, 2 = plr 2
 	{
-		if (FlxG.keys.justPressed.SHIFT) // the bullet stuff was taken from ghost clash lmao
+		if (FlxG.keys.justPressed.SHIFT) // the bullet stuff was taken from ghost clash lmao (I lowkey wanna update ghost clash soon)
 		{
 			shot = true;
 		}

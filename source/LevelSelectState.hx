@@ -13,6 +13,9 @@ class LevelSelectState extends FlxState
 	var bg2:FlxSprite = new FlxSprite(153, 171, AssetPaths.bgLevelSelect2__png);
 	var level1Card:FlxSprite = new FlxSprite(544, 237, AssetPaths.level1Card__png);
 
+	var quitbutton:FlxSprite = new FlxSprite(1104, 631, AssetPaths.quit__png);
+	var shotgunSelect:FlxSprite = new FlxSprite(1009, 647, AssetPaths.shotGun_Pump__png);
+
 	var CMPGCO:Int;
 	var levelFINAL:Int;
 
@@ -34,18 +37,24 @@ class LevelSelectState extends FlxState
 		add(bg1);
 		add(bg2);
 		add(fade);
+		add(quitbutton);
 		add(level1Card);
 	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+
+		if (FlxG.mouse.justPressed)
+		{
+			clickSound.play();
+		}
+
 		if (FlxG.mouse.overlaps(level1Card))
 		{
 			if (FlxG.mouse.justPressed)
 			{
 				levelFINAL = 1;
-				clickSound.play();
 				FlxG.switchState(new PlayState(CMPGCO, levelFINAL));
 			}
 		}
@@ -53,6 +62,36 @@ class LevelSelectState extends FlxState
 		if (FlxG.keys.justPressed.BACKSPACE)
 		{
 			FlxG.switchState(new MenuState());
+		}
+
+		if (FlxG.mouse.overlaps(quitbutton))
+		{
+			add(shotgunSelect);
+			if (FlxG.mouse.justPressed)
+			{
+				clickSound.play();
+				FlxG.switchState(new MenuState());
+			}
+		}
+		else
+		{
+			remove(shotgunSelect);
+		}
+
+		expandCart(level1Card);
+	}
+
+	function expandCart(cart:FlxSprite)
+	{
+		if (FlxG.mouse.overlaps(cart))
+		{
+			cart.scale.x = 1.2;
+			cart.scale.y = 1.2;
+		}
+		else
+		{
+			cart.scale.x = 1;
+			cart.scale.y = 1;
 		}
 	}
 }
