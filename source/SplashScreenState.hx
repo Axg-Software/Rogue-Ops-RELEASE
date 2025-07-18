@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxState;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -40,6 +41,19 @@ class SplashScreenState extends FlxState
 		if (FlxG.keys.justPressed.S)
 		{
 			FlxG.switchState(new MenuState());
+		}
+
+		if (FlxG.save.data.controllerSupport == "yes")
+		{
+			var pad:FlxGamepad = FlxG.gamepads.firstActive;
+
+			if (pad != null)
+			{
+				if (pad.justPressed.B)
+				{
+					FlxG.switchState(new MenuState());
+				}
+			}
 		}
 	}
 

@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -97,6 +98,18 @@ class LevelXPState extends FlxState
 		if (FlxG.keys.justPressed.ENTER)
 		{
 			FlxG.switchState(new WinState(whoWon));
+		}
+
+		if (FlxG.save.data.controllerSupport == "yes")
+		{
+			var pad:FlxGamepad = FlxG.gamepads.firstActive;
+			if (pad != null)
+			{
+				if (pad.justPressed.A)
+				{
+					FlxG.switchState(new WinState(whoWon));
+				}
+			}
 		}
 
 		add(xpText);

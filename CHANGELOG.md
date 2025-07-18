@@ -3,6 +3,22 @@ This is inspired by the [FNF changelog](https://github.com/FunkinCrew/Funkin/blo
 
 Written by [Axuko](https://github.com/Ethan-makes-music?tab=repositories)
 
+## V1.3.0 - 7-18-25
+### Added
+- Full Controller Support
+    - For CO-OP the controller only works for player 1
+    - You can enable controller support by going in the options menu
+- A .txt file that explains the story for the campaign
+- A easter egg somewhere in the menu ;> (Only able to acess with KBM)
+- A a keybind to erase your save data (R + S)
+- A Running animation for player 1
+### Changed
+- Made cursor hide whenever you go into CampaignTransitionState
+### Fixed
+- A bug where after you finish campaign you enter the options menu
+### Removed
+- The video in assets to reduce game size
+
 ## V1.2.0 - 6-9-25
 ### Added
 - Offically added back player levels and they are fully working!

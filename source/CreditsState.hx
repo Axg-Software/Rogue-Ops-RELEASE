@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.sound.FlxSound;
 import flixel.util.FlxColor;
 
@@ -17,6 +18,8 @@ class CreditsState extends FlxState
 	var fade:FlxSprite = new FlxSprite(0, 0, AssetPaths.fade2__png);
 
 	var clickSound:FlxSound;
+
+	var selected:Int = 1;
 
 	override public function create()
 	{
@@ -40,17 +43,58 @@ class CreditsState extends FlxState
 			clickSound.play();
 		}
 
-		if (FlxG.mouse.overlaps(quitbutton))
+		if (FlxG.save.data.controllerSupport == "yes")
 		{
-			add(shotgunSelect);
-			if (FlxG.mouse.justPressed)
+			var pad:FlxGamepad = FlxG.gamepads.firstActive;
+
+			if (pad != null)
 			{
-				FlxG.switchState(new MenuState());
+				if (pad.justPressed.DPAD_DOWN)
+				{
+					selected = selected + 1;
+				}
+				else if (pad.justPressed.DPAD_UP)
+				{
+					selected = selected - 1;
+				}
+
+				if (selected <= 1)
+				{
+					selected = 1;
+				}
+				else if (selected >= 1)
+				{
+					selected = 2;
+				}
+
+				if (selected == 1)
+				{
+					// Nothing lolll
+				}
+				else if (selected == 2)
+				{
+					add(shotgunSelect);
+					if (pad.justPressed.A)
+					{
+						FlxG.switchState(new MenuState());
+					}
+				}
 			}
 		}
-		else
+		else if (FlxG.save.data.controllerSupport == "no" || FlxG.save.data.controllerSupport == null)
 		{
-			remove(shotgunSelect);
+			if (FlxG.mouse.overlaps(quitbutton))
+			{
+				add(shotgunSelect);
+				if (FlxG.mouse.justPressed)
+				{
+					FlxG.switchState(new MenuState());
+				}
+			}
+			else
+			{
+				remove(shotgunSelect);
+			}
 		}
 	}
 }

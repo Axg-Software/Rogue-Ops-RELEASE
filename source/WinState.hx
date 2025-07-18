@@ -3,9 +3,11 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.util.FlxColor;
+import flixel.util.FlxSave;
 
-class WinState extends FlxState // TODO: make it fade into and out of the state
+class WinState extends FlxState
 {
 	var bg:FlxSprite = new FlxSprite(0, 0, AssetPaths.winbg__png);
 	var plr1wins:FlxSprite = new FlxSprite(162, 103, AssetPaths.plr1wins__png);
@@ -51,6 +53,25 @@ class WinState extends FlxState // TODO: make it fade into and out of the state
 		else if (FlxG.keys.justPressed.ESCAPE)
 		{
 			FlxG.switchState(new MenuState());
+		}
+
+		if (FlxG.save.data.controllerSupport == "yes")
+		{
+			var pad:FlxGamepad = FlxG.gamepads.firstActive;
+
+			if (pad != null)
+			{
+				if (pad.justPressed.Y) // gotta make graphics for ts
+				{
+					cmmpgnORcoop = 2;
+					FlxG.switchState(new LevelSelectState(cmmpgnORcoop, 0));
+				}
+
+				if (pad.justPressed.B)
+				{
+					FlxG.switchState(new MenuState());
+				}
+			}
 		}
 	}
 }

@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -34,10 +35,16 @@ class MenuState extends FlxState
 	var p1L4:FlxSprite = new FlxSprite(145, 656, AssetPaths.p1L4__png);
 
 	// version shit
-	var gameV:FlxText = new FlxText(546, 531, FlxG.width, "Rouge Ops version: 1.2.0", 46);
+	var gameV:FlxText = new FlxText(546, 531, FlxG.width, "Rouge Ops version: 1.3.0", 46);
 	var engineV:FlxText = new FlxText(591, 606, FlxG.width, "RE 1.0", 46);
 
-	override function create()
+	// controller shit
+	var selected:Int = 0;
+
+	// Tehehe
+	var campaignPopUp:FlxSprite = new FlxSprite(419, 168, AssetPaths.campaignPopUp__png);
+
+	override function create() // for the popup make it so it sets a var to true and in the update function it runs the if statement where if u press y/n etc
 	{
 		super.create();
 		FlxG.mouse.visible = true;
@@ -87,6 +94,17 @@ class MenuState extends FlxState
 	{
 		super.update(elapsed);
 
+		if (FlxG.keys.pressed.R && FlxG.keys.pressed.S)
+		{
+			FlxG.save.erase();
+			System.exit(999);
+		}
+
+		if (FlxG.keys.pressed.SEVEN && FlxG.keys.pressed.E)
+		{
+			FlxG.switchState(new EasterEggState());
+		}
+
 		FlxG.mouse.visible = true;
 
 		if (FlxG.save.data.levelXP == 1)
@@ -118,19 +136,7 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				cmmpgnORcoop = 1;
-				if (FlxG.save.data.level != null)
-				{
-					music.stop();
-					FlxG.switchState(new PlayState(cmmpgnORcoop, FlxG.save.data.level));
-				}
-				else if (FlxG.save.data.level == null)
-				{
-					music.stop();
-					FlxG.save.data.level = 1;
-					FlxG.save.flush();
-					FlxG.switchState(new PlayState(cmmpgnORcoop, FlxG.save.data.level));
-				}
+				campaignButtonAccept();
 			}
 		}
 		else if (!FlxG.mouse.overlaps(campaignButton))
@@ -145,9 +151,7 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				music.stop();
-				cmmpgnORcoop = 2;
-				FlxG.switchState(new LevelSelectState(cmmpgnORcoop, 0));
+				coopButtonAccept();
 			}
 		}
 		else if (!FlxG.mouse.overlaps(coOpButton))
@@ -162,7 +166,7 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				FlxG.switchState(new OptionsState());
+				optionsButtonAccept();
 			}
 		}
 		else if (!FlxG.mouse.overlaps(optionsButton))
@@ -177,7 +181,7 @@ class MenuState extends FlxState
 			add(shotgunSelect);
 			if (FlxG.mouse.justPressed)
 			{
-				FlxG.switchState(new CreditsState());
+				creditsButtonAccept();
 			}
 		}
 		else if (!FlxG.mouse.overlaps(creditsButton))
@@ -201,5 +205,127 @@ class MenuState extends FlxState
 			remove(gameV);
 			remove(engineV);
 		}
+
+		if (FlxG.save.data.controllerSupport == "yes")
+		{
+			var pad:FlxGamepad = FlxG.gamepads.firstActive;
+
+			if (pad != null)
+			{
+				if (pad.justPressed.DPAD_DOWN)
+				{
+					selected = selected + 1;
+				}
+				else if (pad.justPressed.DPAD_UP)
+				{
+					selected = selected - 1;
+				}
+
+				if (pad.justPressed.A)
+				{
+					if (selected == 1)
+					{
+						campaignButtonAccept();
+					}
+					else if (selected == 2)
+					{
+						coopButtonAccept();
+					}
+					else if (selected == 3)
+					{
+						optionsButtonAccept();
+					}
+					else if (selected == 4)
+					{
+						creditsButtonAccept();
+					}
+				}
+			}
+
+			if (selected > 4)
+			{
+				selected = 4;
+			}
+			else if (selected < 1)
+			{
+				selected = 1;
+			}
+
+			if (selected == 1)
+			{
+				shotgunSelect.y = 254;
+				campaignButton.x = 126;
+				add(shotgunSelect);
+			}
+			else if (selected == 2)
+			{
+				shotgunSelect.y = 314;
+				coOpButton.x = 126;
+				add(shotgunSelect);
+			}
+			else if (selected == 3)
+			{
+				shotgunSelect.y = 374;
+				optionsButton.x = 126;
+				add(shotgunSelect);
+			}
+			else if (selected == 4)
+			{
+				shotgunSelect.y = 434;
+				creditsButton.x = 126;
+				add(shotgunSelect);
+			}
+		}
+	}
+
+	function campaignButtonAccept()
+	{
+		cmmpgnORcoop = 1;
+		if (FlxG.save.data.level != null)
+		{
+			music.stop();
+			if (FlxG.save.data.level >= 4)
+			{
+				add(campaignPopUp);
+				if (FlxG.keys.justPressed.Y)
+				{
+					FlxG.save.data.level = null;
+					FlxG.save.flush();
+					FlxG.switchState(new PlayState(cmmpgnORcoop, FlxG.save.data.level));
+				}
+				else if (FlxG.keys.justPressed.N)
+				{
+					remove(campaignPopUp);
+				}
+			}
+			else if (FlxG.save.data.level <= 3)
+			{
+				FlxG.switchState(new PlayState(cmmpgnORcoop, FlxG.save.data.level));
+			}
+		}
+		else if (FlxG.save.data.level == null)
+		{
+			music.stop();
+			FlxG.save.data.level = 1;
+			FlxG.save.flush();
+			FlxG.switchState(new PlayState(cmmpgnORcoop, FlxG.save.data.level));
+		}
+	}
+
+	function coopButtonAccept()
+	{
+		music.stop();
+		cmmpgnORcoop = 2;
+		FlxG.switchState(new LevelSelectState(cmmpgnORcoop, 0));
+	}
+
+	function optionsButtonAccept()
+	{
+		FlxG.switchState(new OptionsState());
+	}
+
+	function creditsButtonAccept()
+	{
+		FlxG.switchState(new CreditsState());
 	}
 }

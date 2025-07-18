@@ -6,6 +6,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
@@ -175,6 +176,7 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 
 		if (CMPGN_COOP == 1)
 		{
+			FlxG.mouse.visible = true;
 			if (FlxG.save.data.level == 1)
 			{
 				addLevelL1();
@@ -246,6 +248,25 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 	{
 		super.update(elapsed);
 
+		var pad:FlxGamepad = FlxG.gamepads.firstActive;
+
+		if (pad != null)
+		{
+			var pauseMenu = new PauseMenuSubstate();
+			pauseMenu.quitToMenuCallback = function()
+			{
+				trace("Quitting to menu...");
+				FlxG.switchState(new MenuState());
+			};
+			if (FlxG.save.data.controllerSupport == "yes")
+			{
+				if (pad.justPressed.START)
+				{
+					openSubState(new PauseMenuSubstate());
+				}
+			}
+		}
+
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			openSubState(new PauseMenuSubstate());
@@ -288,6 +309,29 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 						FlxG.switchState(new CampaignTransitionState());
 					}
 				}
+
+				if (FlxG.save.data.controllerSupport == "yes")
+				{
+					if (pad != null)
+					{
+						if (plr.overlaps(rocket) && pad.justPressed.A)
+						{
+							rocketTouching = true;
+						}
+						if (rocketTouching == true)
+						{
+							npcFollowers.x = rocket.x - 90;
+							npcFollowers.y = rocket.y + 70;
+							rocket.y = rocket.y - 20;
+							if (rocket.y <= 0)
+							{
+								// FlxG.save.data.level = 2;
+								// FlxG.save.flush();
+								FlxG.switchState(new CampaignTransitionState());
+							}
+						}
+					}
+				}
 			}
 			else if (FlxG.save.data.level == 2)
 			{
@@ -309,6 +353,19 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 					// FlxG.save.flush();
 					FlxG.switchState(new CampaignTransitionState());
 				}
+
+				if (FlxG.save.data.controllerSupport == "yes")
+				{
+					if (pad != null)
+					{
+						if (plr.overlaps(paperNote) && pad.justPressed.A)
+						{
+							// FlxG.save.data.level = 3;
+							// FlxG.save.flush();
+							FlxG.switchState(new CampaignTransitionState());
+						}
+					}
+				}
 			}
 			else if (FlxG.save.data.level == 3)
 			{
@@ -329,6 +386,19 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 					// FlxG.save.data.level = 4;
 					// FlxG.save.flush();
 					FlxG.switchState(new CampaignTransitionState());
+				}
+
+				if (FlxG.save.data.controllerSupport == "yes")
+				{
+					if (pad != null)
+					{
+						if (plr.overlaps(npc1) && pad.justPressed.A)
+						{
+							// FlxG.save.data.level = 4;
+							// FlxG.save.flush();
+							FlxG.switchState(new CampaignTransitionState());
+						}
+					}
 				}
 
 				if (npcAlive == true)
@@ -362,6 +432,18 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 				{
 					FlxG.switchState(new CampaignTransitionState());
 				}
+
+				if (FlxG.save.data.controllerSupport == "yes")
+				{
+					if (pad != null)
+					{
+						if (plr.overlaps(gateClickable) && pad.justPressed.A && gateopen == true)
+						{
+							FlxG.switchState(new CampaignTransitionState());
+						}
+					}
+				}
+
 				if (bullet.overlaps(npcLevel4))
 				{
 					npcLevel4.x = 1000;
@@ -626,6 +708,92 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 			remove(shotgun_Pump);
 		}
 
+		if (FlxG.save.data.controllerSupport == "yes")
+		{
+			if (pad != null)
+			{
+				if (gunPickedUp >= 4)
+				{
+					gunPickedUp = 4;
+				}
+				else if (gunPickedUp <= 1)
+				{
+					gunPickedUp = 1;
+				}
+
+				if (pad.justPressed.LEFT_SHOULDER)
+				{
+					gunPickedUp = gunPickedUp - 1;
+				}
+				else if (pad.justPressed.RIGHT_SHOULDER)
+				{
+					gunPickedUp = gunPickedUp + 1;
+				}
+
+				if (gunPickedUp == 1)
+				{
+					remove(pistol_Berretta);
+					remove(shotgun_Pump);
+					remove(sniper_Kar98);
+				}
+				else if (gunPickedUp == 2)
+				{
+					remove(assaultRifle_ScarH);
+					remove(shotgun_Pump);
+					remove(sniper_Kar98);
+				}
+				else if (gunPickedUp == 3)
+				{
+					remove(assaultRifle_ScarH);
+					remove(pistol_Berretta);
+					remove(sniper_Kar98);
+				}
+				else if (gunPickedUp == 4)
+				{
+					remove(assaultRifle_ScarH);
+					remove(pistol_Berretta);
+					remove(shotgun_Pump);
+				}
+
+				if (pad.justPressed.DPAD_LEFT)
+				{
+					gunNbulletUD = 0;
+					gunNbulletDIR = true;
+					assaultRifle_ScarH.flipX = true;
+					pistol_Berretta.flipX = true;
+					shotgun_Pump.flipX = true;
+					sniper_Kar98.flipX = true;
+				}
+				else if (pad.justPressed.DPAD_RIGHT)
+				{
+					gunNbulletUD = 0;
+					gunNbulletDIR = false;
+					assaultRifle_ScarH.flipX = false;
+					pistol_Berretta.flipX = false;
+					shotgun_Pump.flipX = false;
+					sniper_Kar98.flipX = false;
+				}
+				else if (pad.justPressed.DPAD_UP)
+				{
+					gunNbulletUD = 1;
+					gunNbulletDIR = false;
+					assaultRifle_ScarH.flipX = false;
+					pistol_Berretta.flipX = false;
+					shotgun_Pump.flipX = false;
+					sniper_Kar98.flipX = false;
+				}
+				else if (pad.justPressed.DPAD_DOWN)
+				{
+					gunNbulletUD = 2;
+					gunNbulletDIR = false;
+					assaultRifle_ScarH.flipX = false;
+					pistol_Berretta.flipX = false;
+					shotgun_Pump.flipX = false;
+					sniper_Kar98.flipX = false;
+				}
+			}
+		}
+
 		if (FlxG.keys.justPressed.A)
 		{
 			gunNbulletUD = 0;
@@ -881,6 +1049,36 @@ class PlayState extends TestLevelState // yo past ethan.. why the fuck did you m
 		if (FlxG.keys.justPressed.SHIFT) // the bullet stuff was taken from ghost clash lmao (I lowkey wanna update ghost clash soon)
 		{
 			shot = true;
+		}
+
+		var pad2:FlxGamepad = FlxG.gamepads.firstActive;
+
+		if (FlxG.save.data.controllerSupport == "yes")
+		{
+			if (pad2 != null)
+			{
+				if (pad2.justPressed.RIGHT_TRIGGER)
+				{
+					shot = true;
+				}
+
+				if (pad2.justPressed.RIGHT_TRIGGER && gun == 1) // the bullet stuff was taken from ghost clash lmao
+				{
+					arSHOOT.play();
+				}
+				else if (pad2.justPressed.RIGHT_TRIGGER && gun == 2) // the bullet stuff was taken from ghost clash lmao
+				{
+					pistolSHOOT.play();
+				}
+				else if (pad2.justPressed.RIGHT_TRIGGER && gun == 3) // the bullet stuff was taken from ghost clash lmao
+				{
+					shotgunSHOOT.play();
+				}
+				else if (pad2.justPressed.RIGHT_TRIGGER && gun == 4) // the bullet stuff was taken from ghost clash lmao
+				{
+					sniperShOOT.play();
+				}
+			}
 		}
 
 		if (FlxG.keys.justPressed.SHIFT || FlxG.keys.justPressed.ENTER && gun == 1) // the bullet stuff was taken from ghost clash lmao

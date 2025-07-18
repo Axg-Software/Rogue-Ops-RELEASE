@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxSubState;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.sound.FlxSound;
 
 class PauseMenuSubstate extends FlxSubState
@@ -23,6 +24,11 @@ class PauseMenuSubstate extends FlxSubState
 	var shotgunSelect:FlxSprite = new FlxSprite(0, 0, AssetPaths.shotGun_Pump__png);
 
 	var clickSound:FlxSound;
+
+	var selected:Int = 0;
+
+	// other thing
+	public var quitToMenuCallback:Void->Void;
 
 	public function new()
 	{
@@ -76,6 +82,53 @@ class PauseMenuSubstate extends FlxSubState
 		else
 		{
 			remove(shotgunSelect);
+		}
+
+		if (FlxG.save.data.controllerSupport == "yes")
+		{
+			var pad:FlxGamepad = FlxG.gamepads.firstActive;
+
+			if (pad != null) // TODO: FIX THE QUIT BUTTON NOT WORKING
+			{
+				if (selected <= 1)
+				{
+					selected = 1;
+				}
+				else if (selected >= 2)
+				{
+					selected = 2;
+				}
+
+				if (pad.justPressed.DPAD_DOWN)
+				{
+					selected = selected + 1;
+				}
+				else if (pad.justPressed.DPAD_UP)
+				{
+					selected = selected - 1;
+				}
+
+				if (selected <= 1)
+				{
+					add(shotgunSelect);
+					shotgunSelect.x = 360;
+					shotgunSelect.y = 230;
+					if (pad.justPressed.A)
+					{
+						close();
+					}
+				}
+				else if (selected >= 2)
+				{
+					add(shotgunSelect);
+					shotgunSelect.x = 449;
+					shotgunSelect.y = 281;
+					if (pad.justPressed.A)
+					{
+						FlxG.switchState(new MenuState()); // still need to do this
+					}
+				}
+			}
 		}
 	}
 }

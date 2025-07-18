@@ -25,6 +25,8 @@ class CampaignTransitionState extends FlxState
 	override function create()
 	{
 		super.create();
+		FlxG.mouse.visible = false;
+
 		if (FlxG.save.data.level == 1)
 		{
 			add(transStateText1);
@@ -65,7 +67,7 @@ class CampaignTransitionState extends FlxState
 			}
 			else if (FlxG.save.data.level == 4)
 			{
-				FlxG.switchState(new OptionsState());
+				FlxG.switchState(new MenuState());
 				FlxG.save.data.level = 5;
 				FlxG.save.flush();
 			}

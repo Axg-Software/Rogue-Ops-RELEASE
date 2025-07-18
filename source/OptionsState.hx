@@ -30,6 +30,12 @@ class OptionsState extends FlxState
 
 	var clickSound:FlxSound;
 
+	// Controller support vars
+	var controllerSupportHeader:FlxSprite = new FlxSprite(54, 222, AssetPaths.controllerSupport__png);
+	var controllerSupportYes:FlxSprite = new FlxSprite(544, 221, AssetPaths.yesOption__png);
+	var controllerSupportNo:FlxSprite = new FlxSprite(544, 221, AssetPaths.noOption__png);
+	var controllerSupportSelected:Bool;
+
 	override function create()
 	{
 		super.create();
@@ -41,6 +47,7 @@ class OptionsState extends FlxState
 		add(quitbutton);
 		add(optionsHeader);
 		add(skipIntroHEADER);
+		add(controllerSupportHeader);
 
 		if (FlxG.save.data.name != null || FlxG.save.data.skipIntro == "yes")
 		{
@@ -51,6 +58,17 @@ class OptionsState extends FlxState
 		{
 			add(skipIntroNo);
 			skipIntroSelected = false;
+		}
+
+		if (FlxG.save.data.name != null || FlxG.save.data.controllerSupport == "yes")
+		{
+			add(controllerSupportYes);
+			controllerSupportSelected = true;
+		}
+		else if (FlxG.save.data.controllerSupport == null || FlxG.save.data.controllerSupport == "no")
+		{
+			add(controllerSupportNo);
+			controllerSupportSelected = false;
 		}
 	}
 
@@ -91,6 +109,36 @@ class OptionsState extends FlxState
 			add(skipIntroNo);
 		}
 
+		// -------------------------------------------------------------------
+
+		if (FlxG.mouse.overlaps(controllerSupportYes) && controllerSupportSelected == true)
+		{
+			if (FlxG.mouse.justPressed)
+			{
+				controllerSupportSelected = false;
+			}
+		}
+
+		if (FlxG.mouse.overlaps(controllerSupportNo) && controllerSupportSelected == false)
+		{
+			if (FlxG.mouse.justPressed)
+			{
+				controllerSupportSelected = true;
+			}
+		}
+
+		if (controllerSupportSelected == true)
+		{
+			remove(controllerSupportNo);
+			add(controllerSupportYes);
+		}
+
+		if (controllerSupportSelected == false)
+		{
+			remove(controllerSupportYes);
+			add(controllerSupportNo);
+		}
+
 		if (FlxG.mouse.overlaps(quitbutton))
 		{
 			add(shotgunSelect);
@@ -107,6 +155,19 @@ class OptionsState extends FlxState
 				{
 					add(skipIntroNo);
 					FlxG.save.data.skipIntro = "no";
+					FlxG.save.flush();
+				}
+
+				if (controllerSupportSelected == true)
+				{
+					add(controllerSupportYes);
+					FlxG.save.data.controllerSupport = "yes";
+					FlxG.save.flush();
+				}
+				else if (controllerSupportSelected == false)
+				{
+					add(controllerSupportNo);
+					FlxG.save.data.controllerSupport = "no";
 					FlxG.save.flush();
 				}
 				FlxG.switchState(new MenuState());
